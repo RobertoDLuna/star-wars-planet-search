@@ -1,20 +1,21 @@
 import React, { useContext, useState } from 'react';
 import { DataContext } from '../context/DataContext';
 
-export default function Filters() {
-  const { filter, setFilter, filteredByName,
-    setData, options, setOptions } = useContext(DataContext);
+export default function FilterBar() {
+  const { filter, setFilter, filteredByName, setData } = useContext(DataContext);
 
   const [compareFilter, setCompareFilter] = useState('maior que');
-  const [numericFilter, setNumericFilter] = useState('0');
+  const [numericFilter, setnumericFilter] = useState('0');
   const [tagFilter, setTagFilter] = useState('population');
 
   const handleClick = () => {
     setFilter({
       ...filter,
-      valueFilters: [{ compareFilter, numericFilter, tagFilter }],
+      FiltersValues: [
+        { compareFilter, numericFilter, tagFilter }],
     });
-    const filterComparer = filteredByName.filter((elem) => {
+
+    const FilterComparer = filteredByName.filter((elem) => {
       if (compareFilter === 'maior que') {
         return Number(elem[tagFilter]) > Number(numericFilter);
       }
@@ -26,27 +27,24 @@ export default function Filters() {
       }
       return null;
     });
-    setData(filterComparer);
-    const filterSelect = options.filter((elem) => elem !== tagFilter);
-    setOptions(filterSelect);
-    setTagFilter('population');
+    setData(FilterComparer);
   };
 
   return (
-    <div className="filter-total-bar">
+    <div className="filter-bar-father">
       <label htmlFor="tagFilter">
         <select
           name="tagFilter"
           id="tagFilter"
           value={ tagFilter }
           data-testid="column-filter"
-          onChange={ ({ value }) => setTagFilter(value) }
+          onChange={ ({ target: { value } }) => setTagFilter(value) }
         >
           <option value="population">population</option>
           <option value="orbital_period">orbital_period</option>
-          <option value="diameter">diameter</option>
           <option value="rotation_period">rotation_period</option>
           <option value="surface_water">surface_water</option>
+          <option value="diameter">diameter</option>
         </select>
       </label>
       <label htmlFor="compareFilter">
@@ -55,7 +53,7 @@ export default function Filters() {
           id="compareFilter"
           value={ compareFilter }
           data-testid="comparison-filter"
-          onChange={ ({ value }) => setCompareFilter(value) }
+          onChange={ ({ target: { value } }) => setCompareFilter(value) }
         >
           <option value="maior que">maior que</option>
           <option value="menor que">menor que</option>
@@ -69,16 +67,16 @@ export default function Filters() {
           type="text"
           data-testid="value-filter"
           value={ numericFilter }
-          onChange={ ({ value }) => setNumericFilter(value) }
+          onChange={ ({ target: { value } }) => setnumericFilter(value) }
         />
-        <button
-          type="button"
-          data-testid="button-filter"
-          onClick={ () => handleClick }
-        >
-          Filtrar
-        </button>
       </label>
+      <button
+        type="button"
+        data-testid="button-filter"
+        onClick={ () => handleClick() }
+      >
+        Filtrar
+      </button>
     </div>
   );
 }
